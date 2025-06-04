@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2048 Game</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="title">
+    <span class="jump" style="--i:0">2</span>
+    <span class="jump" style="--i:1">0</span>
+    <span class="jump" style="--i:2">4</span>
+    <span class="jump" style="--i:3">8</span>
+  </div>
+  <div class="score-box" id="score">
+    <div class="score-label">Score</div>
+    <div class="score-value" id="score-value">0</div>
+  </div>
+  <div class="score-box" id="best-score">
+    <div class="score-label">Best</div>
+    <div class="score-value" id="best-value">0</div>
+  </div>
+  <div id="board"></div>
+  <button id="new-game-btn">New Game</button>
+  <button id="undo-btn" disabled>
+    <img src="undo.png" alt="Undo" width="80" height="80" />
+  </button>
+  <script src="script.js"></script>
+</body>
+</html>

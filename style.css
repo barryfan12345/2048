@@ -1,0 +1,148 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background: #faf8ef;
+  margin-top: 50px;
+}
+
+#title{
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 16px;
+  background-color: transparent;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-weight: bold;
+  z-index: 999;
+  display:flex;
+}
+
+.jump {
+  font-size: 50px;
+  animation: waveJump 4.6s infinite ease-in-out;
+  animation-delay: calc(var(--i) * 0.8s);
+  display: inline-block;
+  background: linear-gradient(45deg, #8f7a66,#eee4da);;
+  background-size: 200%;
+  -webkit-background-clip: text;
+  color: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+@keyframes waveJump {
+  0%, 100% { transform: translateY(0); }
+  20%     { transform: translateY(-10px); }
+  40%     { transform: translateY(0); }
+}
+
+
+.score-box {
+  font-family: "Helvetica", sans-serif;
+  background-color: #eee4da;
+  border: 2px solid #8f7a66;
+  border-radius: 5px;
+  padding: 10px 20px;
+  display: inline-block;
+  text-align: center;
+  width: 120px;
+  box-sizing: border-box;
+  margin-right: 10px;
+  margin-bottom: 20px;
+}
+
+.score-label, .score-value {
+  color: #776e65;
+  font-weight: bold;
+}
+
+.score-label {
+  font-size: 16px;
+}
+
+.score-value {
+  font-size: 24px;
+  margin-top: 5px;
+}
+
+
+
+#board {
+  display: grid;
+  grid-template-columns: repeat(4, 100px);
+  grid-gap: 10px;
+  width: 430px;
+  margin: auto;
+  background: #bbada0;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.tile {
+  width: 100px;
+  height: 100px;
+  background: #cdc1b4;
+  font-size: 24px;
+  line-height: 100px;
+  border-radius: 3px;
+  font-weight: bold;
+  color: #776e65;
+}
+
+#new-game-btn {
+  position: absolute;
+  top: 10px;
+  left: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding: 8px 16px;
+  font-size: 26px;
+  border: none;
+  background-color: #8f7a66;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#new-game-btn:hover {
+  background-color: #a68c74;
+}
+
+#undo-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  margin-top: 10px;
+}
+
+#undo-btn img {
+  width: 80px;
+  height: 80px;
+}
+
+#undo-btn:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+#undo-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+
+
+.tile[data-value="2"]  { background: #eee4da; }
+.tile[data-value="4"]  { background: #ede0c8; }
+.tile[data-value="8"]  { background: #f2b179; }
+.tile[data-value="16"] { background: #f59563; }
+.tile[data-value="32"] { background: #f67c5f; }
+.tile[data-value="64"] { background: #f65e3b; }
+.tile[data-value="128"] { background: #edcf72; }
+.tile[data-value="256"] { background: #edcc61; }
+.tile[data-value="512"] { background: #edc850; }
+.tile[data-value="1024"] { background: #edc53f; }
+.tile[data-value="2048"] { background: #edc22e; }
