@@ -8,10 +8,22 @@ let undoCount = 0;
 const maxUndo = 2;
 let moveMadeSinceUndo = false;
 let mergedTiles = [];
+let previousPositions = new Map();
+let newTilePositions = [];
+let tileIdCounter = 0;
 
 function savePreviousState() {
-  previousGrid = grid.map(row => [...row]);
+  previousGrid = grid.map(row => row.map(tile => tile ? { ...tile } : 0));
   previousScore = score;
+  previousPositions.clear();
+  for (let r = 0; r < 4; r++) {
+    for (let c = 0; c < 4; c++) {
+      const tile = grid[r][c];
+      if (tile && tile.value !== 0) {
+        previousPositions.set(tile.id, { r, c });
+      }
+    }
+  }
 }
 
 function initBoard() {
@@ -25,16 +37,45 @@ function initBoard() {
 
 function updateBoard() {
   board.innerHTML = "";
-  grid.flat().forEach((value, index) => {
+  const tileSize = board.offsetWidth / 4;
+
+  grid.flat().forEach((tileData, index) => {
     const tile = document.createElement("div");
-    tile.className = "tile";
-    tile.textContent = value === 0 ? "" : value;
-    tile.dataset.value = value;
     const r = Math.floor(index / 4);
     const c = index % 4;
+
+    if (!tileData || tileData.value === 0) {
+      tile.className = "tile empty";
+      board.appendChild(tile);
+      return;
+    }
+
+    const { value, id } = tileData;
+    tile.className = "tile";
+    tile.textContent = value;
+    tile.dataset.value = value;
+
+    if (newTilePositions.some(pos => pos.r === r && pos.c === c)) {
+      tile.classList.add("pop");
+    } else {
+      const prev = previousPositions.get(id);
+      if (prev) {
+        const dx = (prev.c - c) * (tileSize + 10);
+        const dy = (prev.r - r) * (tileSize + 10);
+        if (dx !== 0 || dy !== 0) {
+          tile.classList.add("moving");
+          tile.style.transform = `translate(${dx}px, ${dy}px)`;
+          requestAnimationFrame(() => {
+            tile.style.transform = "translate(0, 0)";
+          });
+        }
+      }
+    }
+
     if (mergedTiles.some(pos => pos.r === r && pos.c === c)) {
       tile.classList.add("bounce");
     }
+
     board.appendChild(tile);
   });
 
@@ -54,19 +95,23 @@ function addTile() {
   }
   if (empty.length > 0) {
     let [r, c] = empty[Math.floor(Math.random() * empty.length)];
-    grid[r][c] = Math.random() < 0.9 ? 2 : 4;
+    const newValue = Math.random() < 0.9 ? 2 : 4;
+    grid[r][c] = { value: newValue, id: tileIdCounter++ };
+    newTilePositions = [{ r, c }];
+  } else {
+    newTilePositions = [];
   }
 }
 
 function slide(row, rowIndex) {
-  let arr = row.filter(val => val);
+  let arr = row.filter(tile => tile);
   let newRow = [];
   let i = 0;
   while (i < arr.length) {
-    if (arr[i] === arr[i + 1]) {
-      let mergedValue = arr[i] * 2;
+    if (i + 1 < arr.length && arr[i].value === arr[i + 1].value) {
+      let mergedValue = arr[i].value * 2;
       score += mergedValue;
-      newRow.push(mergedValue);
+      newRow.push({ value: mergedValue, id: tileIdCounter++ });
       mergedTiles.push({ r: rowIndex, c: newRow.length - 1 });
       i += 2;
     } else {
@@ -133,9 +178,9 @@ function arraysEqual(a, b) {
 function isGameOver() {
   for (let r = 0; r < 4; r++) {
     for (let c = 0; c < 4; c++) {
-      if (grid[r][c] === 0) return false;
-      if (c < 3 && grid[r][c] === grid[r][c + 1]) return false;
-      if (r < 3 && grid[r][c] === grid[r + 1][c]) return false;
+      if (!grid[r][c] || grid[r][c].value === 0) return false;
+      if (c < 3 && grid[r][c].value === grid[r][c + 1]?.value) return false;
+      if (r < 3 && grid[r][c].value === grid[r + 1][c]?.value) return false;
     }
   }
   return true;
@@ -185,7 +230,7 @@ board.addEventListener("touchend", e => {
   touchEndY = e.changedTouches[0].clientY;
   handleSwipe();
   e.preventDefault();
-},{ passive: false });
+}, { passive: false });
 
 function handleSwipe() {
   const dx = touchEndX - touchStartX;
@@ -220,7 +265,7 @@ document.getElementById("new-game-btn").addEventListener("click", () => {
 
 document.getElementById("undo-btn").addEventListener("click", () => {
   if (undoCount < maxUndo) {
-    grid = previousGrid.map(row => [...row]);
+    grid = previousGrid.map(row => row.map(tile => tile ? { ...tile } : 0));
     score = previousScore;
     document.getElementById("score-value").textContent = score;
     updateBoard();
