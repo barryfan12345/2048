@@ -111,6 +111,10 @@ body {
   transition: transform 0.2s ease;
 }
 
+.tile.moving {
+  transition: transform 0.2s ease-in-out;
+}
+
 .controls {
   display: flex;
   gap: 10px;
@@ -145,7 +149,6 @@ body {
   color: transparent;
   margin: 20px 0;
 }
-
 
 #undo-btn:focus {
   outline: none;
