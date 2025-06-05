@@ -219,6 +219,7 @@ body {
     width: 90vmin;
     height: 90vmin;
     gap: 2vmin;
+    align-content: stretch;
   }
 
   .tile {
