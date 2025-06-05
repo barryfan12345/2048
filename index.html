@@ -5,76 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>2048 Game</title>
   <link rel="stylesheet" href="style.css" />
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      width: 100%;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: #faf8ef;
-      font-family: sans-serif;
-    }
-
-    #board {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      grid-template-rows: repeat(4, 1fr);
-      gap: 10px;
-      width: 90vmin;
-      height: 90vmin;
-      background-color: #bbada0;
-      padding: 10px;
-      box-sizing: border-box;
-      border-radius: 10px;
-      touch-action: none;
-    }
-
-    .tile {
-      background-color: #cdc1b4;
-      font-size: 6vmin;
-      font-weight: bold;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-radius: 5px;
-      user-select: none;
-    }
-
-    .bounce {
-      animation: bounce 0.3s ease;
-    }
-
-    @keyframes bounce {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.2); }
-      100% { transform: scale(1); }
-    }
-  </style>
 </head>
 <body>
-  <div id="title">
-    <span class="jump" style="--i:0">2</span>
-    <span class="jump" style="--i:1">0</span>
-    <span class="jump" style="--i:2">4</span>
-    <span class="jump" style="--i:3">8</span>
-  </div>
-  <div class="score-box" id="score">
-    <div class="score-label">Score</div>
-    <div class="score-value" id="score-value">0</div>
-  </div>
-  <div class="score-box" id="best-score">
-    <div class="score-label">Best</div>
-    <div class="score-value" id="best-value">0</div>
+  <div id="header">
+    <div id="title">
+      <span class="jump" style="--i:0">2</span>
+      <span class="jump" style="--i:1">0</span>
+      <span class="jump" style="--i:2">4</span>
+      <span class="jump" style="--i:3">8</span>
+    </div>
+    <div class="score-row">
+      <div class="score-box" id="score">
+        <div class="score-label">Score</div>
+        <div class="score-value" id="score-value">0</div>
+      </div>
+      <div class="score-box" id="best-score">
+        <div class="score-label">Best</div>
+        <div class="score-value" id="best-value">0</div>
+      </div>
+    </div>
+    <div class="controls">
+      <button id="new-game-btn">New Game</button>
+    </div>
   </div>
   <div id="board"></div>
-  <button id="new-game-btn">New Game</button>
   <button id="undo-btn" disabled>
-    <img src="undo.png" alt="Undo" width="80" height="80" />
+      <img src="undo.png" alt="Undo" width="80" height="80" />
   </button>
   <script src="script.js"></script>
 </body>
