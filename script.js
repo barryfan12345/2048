@@ -176,14 +176,16 @@ board.addEventListener("touchstart", e => {
   if (e.touches.length === 1) {
     touchStartX = e.touches[0].clientX;
     touchStartY = e.touches[0].clientY;
+    e.preventDefault();
   }
-});
+}, { passive: false });
 
 board.addEventListener("touchend", e => {
   touchEndX = e.changedTouches[0].clientX;
   touchEndY = e.changedTouches[0].clientY;
   handleSwipe();
-});
+  e.preventDefault();
+},{ passive: false });
 
 function handleSwipe() {
   const dx = touchEndX - touchStartX;
