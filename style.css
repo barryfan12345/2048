@@ -192,16 +192,34 @@ body {
 
 /* Responsive tweaks for phones */
 @media (max-width: 600px) {
+  #title {
+    position: static;
+    font-size: 9vmin;
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  .score-row {
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 10px;
+  }
+
+  #new-game-btn {
+    position: static;
+    margin-top: 10px;
+  }
+
   #board {
     grid-template-columns: repeat(4, 1fr);
-    width: 70vmin;
-    height: 70vmin;
+    width: 90vmin;
+    height: 90vmin;
     gap: 2vmin;
   }
 
   .tile {
-    width: 80%;
-    height: 80%;
+    width: 100%;
+    height: 100%;
     font-size: 6vmin;
     line-height: initial;
   }
@@ -211,7 +229,6 @@ body {
   }
 
   .score-box {
-    margin-top: 10px;
     width: 80px;
     padding: 8px;
   }
@@ -235,17 +252,5 @@ body {
     display: inline;
     width: 28px;
     height: 28px;
-  }
-
-  #new-game-btn {
-    font-size: 0.9rem;
-    padding: 8px 12px;
-    position: static;
-    margin-top: 10px;
-  }
-
-  #title {
-    position: static;
-    margin-top: 10px;
   }
 }
