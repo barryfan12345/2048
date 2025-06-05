@@ -63,9 +63,10 @@ function updateBoard() {
         const dx = (prev.c - c) * (tileSize + 10);
         const dy = (prev.r - r) * (tileSize + 10);
         if (dx !== 0 || dy !== 0) {
-          tile.classList.add("moving");
           tile.style.transform = `translate(${dx}px, ${dy}px)`;
+          tile.classList.add("moving");
           requestAnimationFrame(() => {
+            tile.getBoundingClientRect(); // force reflow
             tile.style.transform = "translate(0, 0)";
           });
         }
