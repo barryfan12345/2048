@@ -7,16 +7,12 @@ let previousScore = 0;
 let undoCount = 0;
 const maxUndo = 2;
 let moveMadeSinceUndo = false;
-
-
+let mergedTiles = [];
 
 function savePreviousState() {
   previousGrid = grid.map(row => [...row]);
   previousScore = score;
 }
-
-
-
 
 function initBoard() {
   grid = Array(4).fill().map(() => Array(4).fill(0));
@@ -29,19 +25,24 @@ function initBoard() {
 
 function updateBoard() {
   board.innerHTML = "";
-  grid.flat().forEach(value => {
+  grid.flat().forEach((value, index) => {
     const tile = document.createElement("div");
     tile.className = "tile";
     tile.textContent = value === 0 ? "" : value;
     tile.dataset.value = value;
+    const r = Math.floor(index / 4);
+    const c = index % 4;
+    if (mergedTiles.some(pos => pos.r === r && pos.c === c)) {
+      tile.classList.add("bounce");
+    }
     board.appendChild(tile);
   });
+
   document.getElementById("score-value").textContent = score;
   if (score > bestScore) {
-  bestScore = score;
-  document.getElementById("best-value").textContent = bestScore;
+    bestScore = score;
+    document.getElementById("best-value").textContent = bestScore;
   }
-
 }
 
 function addTile() {
@@ -57,21 +58,24 @@ function addTile() {
   }
 }
 
-function slide(row) {
+function slide(row, rowIndex) {
   let arr = row.filter(val => val);
-  for (let i = 0; i < arr.length - 1; i++) {
+  let newRow = [];
+  let i = 0;
+  while (i < arr.length) {
     if (arr[i] === arr[i + 1]) {
-      arr[i] *= 2;
-      score += arr[i];
-      if (score > bestScore) {
-        bestScore = score;
-        document.getElementById("best-value").textContent = bestScore;
-        localStorage.setItem("bestScore", bestScore);
-      }
-      arr[i + 1] = 0;
+      let mergedValue = arr[i] * 2;
+      score += mergedValue;
+      newRow.push(mergedValue);
+      mergedTiles.push({ r: rowIndex, c: newRow.length - 1 });
+      i += 2;
+    } else {
+      newRow.push(arr[i]);
+      i += 1;
     }
   }
-  return [...arr.filter(val => val), ...Array(4 - arr.filter(val => val).length).fill(0)];
+  while (newRow.length < 4) newRow.push(0);
+  return newRow;
 }
 
 function rotateClockwise(matrix) {
@@ -84,8 +88,9 @@ function rotateCounterClockwise(matrix) {
 
 function moveLeftGrid() {
   let moved = false;
+  mergedTiles = [];
   for (let r = 0; r < 4; r++) {
-    let newRow = slide(grid[r]);
+    let newRow = slide(grid[r], r);
     if (!arraysEqual(grid[r], newRow)) {
       grid[r] = newRow;
       moved = true;
@@ -95,23 +100,29 @@ function moveLeftGrid() {
 }
 
 function moveRightGrid() {
+  mergedTiles = [];
   grid = grid.map(row => row.reverse());
   const moved = moveLeftGrid();
   grid = grid.map(row => row.reverse());
+  mergedTiles = mergedTiles.map(({ r, c }) => ({ r, c: 3 - c }));
   return moved;
 }
 
 function moveUpGrid() {
+  mergedTiles = [];
   grid = rotateCounterClockwise(grid);
   const moved = moveLeftGrid();
   grid = rotateClockwise(grid);
+  mergedTiles = mergedTiles.map(({ r, c }) => ({ r: c, c: r }));
   return moved;
 }
 
 function moveDownGrid() {
+  mergedTiles = [];
   grid = rotateClockwise(grid);
   const moved = moveLeftGrid();
   grid = rotateCounterClockwise(grid);
+  mergedTiles = mergedTiles.map(({ r, c }) => ({ r: 3 - c, c: r }));
   return moved;
 }
 
@@ -120,7 +131,6 @@ function arraysEqual(a, b) {
 }
 
 function isGameOver() {
-  // Check for empty cell
   for (let r = 0; r < 4; r++) {
     for (let c = 0; c < 4; c++) {
       if (grid[r][c] === 0) return false;
@@ -131,7 +141,6 @@ function isGameOver() {
   return true;
 }
 
-
 window.addEventListener("keydown", (e) => {
   let moved = false;
   if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.key)) {
@@ -139,7 +148,6 @@ window.addEventListener("keydown", (e) => {
     if (undoCount < maxUndo) {
       document.getElementById("undo-btn").disabled = false;
     }
-
     moveMadeSinceUndo = true;
   }
 
@@ -159,10 +167,47 @@ window.addEventListener("keydown", (e) => {
   }
 });
 
+let touchStartX = 0;
+let touchStartY = 0;
+let touchEndX = 0;
+let touchEndY = 0;
+
+board.addEventListener("touchstart", e => {
+  if (e.touches.length === 1) {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }
+});
+
+board.addEventListener("touchend", e => {
+  touchEndX = e.changedTouches[0].clientX;
+  touchEndY = e.changedTouches[0].clientY;
+  handleSwipe();
+});
+
+function handleSwipe() {
+  const dx = touchEndX - touchStartX;
+  const dy = touchEndY - touchStartY;
+
+  if (Math.abs(dx) > Math.abs(dy)) {
+    if (Math.abs(dx) > 30) {
+      if (dx > 0) simulateKey("ArrowRight");
+      else simulateKey("ArrowLeft");
+    }
+  } else {
+    if (Math.abs(dy) > 30) {
+      if (dy > 0) simulateKey("ArrowDown");
+      else simulateKey("ArrowUp");
+    }
+  }
+}
+
+function simulateKey(key) {
+  const event = new KeyboardEvent("keydown", { key });
+  window.dispatchEvent(event);
+}
 
 window.addEventListener("load", initBoard);
-
-
 
 document.getElementById("new-game-btn").addEventListener("click", () => {
   score = 0;
@@ -186,8 +231,3 @@ document.getElementById("undo-btn").addEventListener("click", () => {
     }
   }
 });
-
-
-
-
-
