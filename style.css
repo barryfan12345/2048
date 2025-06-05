@@ -194,8 +194,8 @@ body {
 @media (max-width: 600px) {
   #board {
     grid-template-columns: repeat(4, 1fr);
-    width: 90vmin;
-    height: 90vmin;
+    width: 70vmin;
+    height: 70vmin;
     gap: 2vmin;
   }
 
@@ -211,6 +211,7 @@ body {
   }
 
   .score-box {
+    margin-top: 10px;
     width: 80px;
     padding: 8px;
   }
