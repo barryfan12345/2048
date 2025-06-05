@@ -66,6 +66,7 @@ body {
   padding: 10px;
   width: 120px;
   text-align: center;
+  z-index: 0;
 }
 
 .score-label, .score-value {
@@ -127,7 +128,7 @@ body {
   position: absolute;
   top: 10px;
   left: 10px;
-  z-index: 1000;
+  z-index: 1001;
 }
 
 #new-game-btn:hover {
@@ -203,11 +204,13 @@ body {
     flex-direction: row;
     justify-content: center;
     margin-top: 10px;
+    z-index: 0;
   }
 
   #new-game-btn {
     position: static;
     margin-top: 10px;
+    z-index: 1;
   }
 
   #board {
