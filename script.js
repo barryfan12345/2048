@@ -62,8 +62,17 @@ function updateBoard() {
     const { value, id } = tileData;
     const tile = document.createElement("div");
     tile.className = "tile";
+    tile.style.backgroundImage = `url('img/${value}.png')`;
+    tile.style.backgroundSize = "cover";
+    tile.style.backgroundPosition = "center";
     tile.textContent = value;
-    tile.dataset.value = value;
+    tile.style.color = "white"; // or something visible over the image
+    tile.style.fontSize = "24px";
+    tile.style.fontWeight = "bold";
+    tile.style.textAlign = "center";
+    tile.style.lineHeight = `${tileSize}px`; // vertically center text
+
+
     tile.style.width = `${tileSize}px`;
     tile.style.height = `${tileSize}px`;
     tile.style.left = `${tilePadding + c * (tileSize + tilePadding)}px`;
