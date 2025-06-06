@@ -84,10 +84,9 @@ body {
 }
 
 #board {
-  display: grid;
-  grid-template-columns: repeat(4, 100px);
-  gap: 10px;
+  position: relative;
   width: 450px;
+  height: 450px;
   margin: 20px auto;
   background: #bbada0;
   padding: 10px;
@@ -95,12 +94,25 @@ body {
   box-sizing: border-box;
 }
 
-.tile {
+.tile:not(.empty) {
+  position: absolute;
   width: 100px;
   height: 100px;
+  z-index: 2;
+  transition: transform 0.2s ease-in-out;
+}
+
+.tile.empty {
+  background: #cdc1b4;
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  z-index: 0;
+}
+
+.tile {
   background: #cdc1b4;
   font-size: 24px;
-  line-height: 100px;
   border-radius: 3px;
   font-weight: bold;
   color: #776e65;
@@ -108,7 +120,6 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: transform 0.2s ease;
 }
 
 .tile.moving {
@@ -182,7 +193,6 @@ body {
   100% { transform: scale(1); }
 }
 
-/* Tile colors */
 .tile[data-value="2"]    { background: #eee4da; }
 .tile[data-value="4"]    { background: #ede0c8; }
 .tile[data-value="8"]    { background: #f2b179; }
@@ -195,7 +205,6 @@ body {
 .tile[data-value="1024"] { background: #edc53f; }
 .tile[data-value="2048"] { background: #edc22e; }
 
-/* Responsive tweaks for phones */
 @media (max-width: 600px) {
   #title {
     position: static;
@@ -218,7 +227,6 @@ body {
   }
 
   #board {
-    grid-template-columns: repeat(4, 1fr);
     width: 90vmin;
     height: 90vmin;
     gap: 2vmin;
@@ -226,11 +234,9 @@ body {
   }
 
   .tile {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    height: auto;              
+    width: 22vmin;
+    height: 22vmin;
     font-size: 6vmin;
-    flex: none;                
     box-sizing: border-box;
     line-height: normal;
   }

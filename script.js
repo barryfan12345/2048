@@ -37,36 +37,52 @@ function initBoard() {
 
 function updateBoard() {
   board.innerHTML = "";
-  const tileSize = board.offsetWidth / 4;
+  const tileSize = board.offsetWidth / 4 - 12.5;
+  const tilePadding = 10;
+
+  for (let r = 0; r < 4; r++) {
+    for (let c = 0; c < 4; c++) {
+      const emptyTile = document.createElement("div");
+      emptyTile.className = "tile empty";
+      emptyTile.style.width = `${tileSize}px`;
+      emptyTile.style.height = `${tileSize}px`;
+      emptyTile.style.left = `${tilePadding + c * (tileSize + tilePadding)}px`;
+      emptyTile.style.top = `${tilePadding + r * (tileSize + tilePadding)}px`;
+      emptyTile.style.position = "absolute";
+      board.appendChild(emptyTile);
+    }
+  }
 
   grid.flat().forEach((tileData, index) => {
-    const tile = document.createElement("div");
     const r = Math.floor(index / 4);
     const c = index % 4;
 
-    if (!tileData || tileData.value === 0) {
-      tile.className = "tile empty";
-      board.appendChild(tile);
-      return;
-    }
+    if (!tileData || tileData.value === 0) return;
 
     const { value, id } = tileData;
+    const tile = document.createElement("div");
     tile.className = "tile";
     tile.textContent = value;
     tile.dataset.value = value;
+    tile.style.width = `${tileSize}px`;
+    tile.style.height = `${tileSize}px`;
+    tile.style.left = `${tilePadding + c * (tileSize + tilePadding)}px`;
+    tile.style.top = `${tilePadding + r * (tileSize + tilePadding)}px`;
+    tile.style.position = "absolute";
 
     if (newTilePositions.some(pos => pos.r === r && pos.c === c)) {
       tile.classList.add("pop");
     } else {
       const prev = previousPositions.get(id);
       if (prev) {
-        const dx = (prev.c - c) * (tileSize + 10);
-        const dy = (prev.r - r) * (tileSize + 10);
+        const dx = (prev.c - c) * (tileSize + tilePadding);
+        const dy = (prev.r - r) * (tileSize + tilePadding);
+
         if (dx !== 0 || dy !== 0) {
           tile.style.transform = `translate(${dx}px, ${dy}px)`;
           tile.classList.add("moving");
           requestAnimationFrame(() => {
-            tile.getBoundingClientRect(); // force reflow
+            tile.getBoundingClientRect();
             tile.style.transform = "translate(0, 0)";
           });
         }
